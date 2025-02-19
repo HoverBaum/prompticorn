@@ -1,0 +1,22 @@
+stages:
+  - build
+
+build_branch:
+  stage: build
+  tags:
+    - nl-playground # shared dev-runner in nl-playground
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - if [ $CI_COMMIT_REF_NAME == "main" ]; then export CONTAINER_BUILD="latest"; else CONTAINER_BUILD="develop"; fi
+    - echo "{\"auths\":{\"${AZURE_REGISTRY_URL}\":{\"username\":\"${AZURE_REGISTRY_USERNAME}\",\"password\":\"${AZURE_REGISTRY_PASSWORD}\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${AZURE_REGISTRY_URL}/prompticorn:${CI_COMMIT_SHORT_SHA}"
+      --destination "${AZURE_REGISTRY_URL}/prompticorn:${CONTAINER_BUILD}"
+  # when: manual
+  allow_failure: false
+  only:
+    - main
