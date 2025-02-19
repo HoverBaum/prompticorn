@@ -1,4 +1,5 @@
 import { ChatMessageType } from '../../types'
+// @ts-ignore
 import PROMPTICORN_IMAGE from './prompticorn.png'
 import { Button } from '@/components/ui/button'
 import { GenericChatMessage } from './GenericChatMessage'
