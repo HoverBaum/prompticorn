@@ -10,10 +10,6 @@ export async function POST(req: Request) {
   const { messages } = await req.json()
   console.log('messages', messages)
 
-  const isImagePrompt = await checkIfImagePrompt(
-    messages[messages.length - 1].content
-  )
-
   const allMessages: CoreMessage[] = [
     {
       role: 'system',
@@ -22,6 +18,9 @@ export async function POST(req: Request) {
     ...messages,
   ]
 
+  const isImagePrompt = await checkIfImagePrompt(
+    messages[messages.length - 1].content
+  )
   if (!isImagePrompt) {
     allMessages.push({
       role: 'system',
